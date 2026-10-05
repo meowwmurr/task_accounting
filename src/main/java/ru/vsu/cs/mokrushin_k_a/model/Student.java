@@ -1,5 +1,6 @@
 package ru.vsu.cs.mokrushin_k_a.model;
 
+import ru.vsu.cs.mokrushin_k_a.exception.InvalidStudentNameException;
 import ru.vsu.cs.mokrushin_k_a.exception.TaskLimitException;
 import ru.vsu.cs.mokrushin_k_a.exception.TaskNotFoundException;
 
@@ -10,24 +11,30 @@ import java.util.Map;
 public class Student {
     private int groupId;
     private int studentId;
-    private final String full_name;
+    private final String fullName;
     private Map<Integer, Boolean> tasks;
 
-    public Student(String full_name, int groupId){
-        this.full_name = full_name;
+    public Student(String fullName, int groupId){
+        if (fullName == null || fullName.isBlank()) {
+            throw new InvalidStudentNameException(fullName);
+        }
+        this.fullName = fullName;
         this.groupId = groupId;
         this.tasks = new HashMap<>();
     }
 
-    public Student(String full_name, int groupId, int studentId, Map<Integer, Boolean> tasks){
-        this.full_name = full_name;
+    public Student(String fullName, int groupId, int studentId, Map<Integer, Boolean> tasks){
+        if (fullName == null || fullName.isBlank()) {
+            throw new InvalidStudentNameException(fullName);
+        }
+        this.fullName = fullName;
         this.groupId = groupId;
         this.studentId = studentId;
-        this.tasks = tasks;
+        this.tasks = new HashMap<>(tasks);
     }
 
     public String getFull_name() {
-        return full_name;
+        return fullName;
     }
 
     public int getGroupId() {
@@ -52,14 +59,16 @@ public class Student {
         }
         if (tasks.containsKey(taskNum)){
             tasks.put(taskNum, status);
-        }
-        if (tasks.size() > 3){throw new TaskLimitException("Лимит тасков(3) превышен, отдыхайте");}
-        else {
+        }else{
+        if (tasks.size() >= 3){throw new TaskLimitException();}
             tasks.put(taskNum, status);
         }
     }
 
-    public boolean taskStatus(int taskNum){return tasks.getOrDefault(taskNum, false);}
+    public boolean taskStatus(int taskNum){
+        if (taskNum < 1 || taskNum > 3){throw new TaskNotFoundException(taskNum);}
+        return tasks.getOrDefault(taskNum, false);
+    }
 
     @Override
     public boolean equals(Object o){
@@ -68,5 +77,20 @@ public class Student {
 
         Student student = (Student) o;
         return studentId == student.studentId;
+    }
+
+    @Override
+    public int hashCode(){
+        return Integer.hashCode(studentId);
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id = " + studentId +
+                ", name = '" + fullName + '\'' +
+                ", group = " + groupId +
+                ", tasks = " + tasks +
+                '}';
     }
 }

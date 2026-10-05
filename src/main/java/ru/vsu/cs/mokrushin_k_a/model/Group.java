@@ -7,9 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class Group {
-    private int groupId;
+    private final int groupId;
     private final int courseNumber;
-    private String groupName;
+    private final String groupName;
     private List<Student> studentsList = new ArrayList<>();
 
     public Group(int courseNumber, int groupId, String groupName){
@@ -19,10 +19,6 @@ public class Group {
     }
 
     public int getGroupId(){
-        return groupId;
-    }
-
-    public int setGroupId(){
         return groupId;
     }
 
@@ -40,7 +36,13 @@ public class Group {
         }
     }
 
-    public void deleteStudent(Student student){
+    public void deleteStudent(Student student) {
+        if (student == null) {
+            throw new GroupException("Студент не может быть null");
+        }
+        if (student.getGroupId() != this.groupId) {
+                throw new GroupException("Студент не с той группы");
+            }
         studentsList.remove(student);
     }
 
@@ -54,5 +56,23 @@ public class Group {
 
     public int getCourseNumber() {
         return courseNumber;
+    }
+
+    public int getStudentsCount(){
+        return studentsList.size();
+    }
+
+    public boolean isGroupEmpty(){
+        return studentsList.isEmpty();
+    }
+
+    @Override
+    public String toString(){
+        return "Group " +
+                "{id = " + groupId +
+                ", name = " + groupName +
+                ", course = " + courseNumber +
+                ", studentsCount = " + getStudentsCount() +
+                "}";
     }
 }
