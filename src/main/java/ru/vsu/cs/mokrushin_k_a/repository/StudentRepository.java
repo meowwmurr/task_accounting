@@ -61,7 +61,7 @@ public class StudentRepository {
                         s.getGroupId() + ";" +
                         s.taskStatus(1) + ";" +
                         s.taskStatus(2) + ";" +
-                        s.taskStatus(3) + ";";
+                        s.taskStatus(3);
                 bw.write(line);
                 bw.newLine();
             }
@@ -90,6 +90,7 @@ public class StudentRepository {
     public void deleteStudentFromRepo(Student student){
         if (student == null) throw new IllegalArgumentException();
         students.remove(student.getStudentId(), student);
+        save();
     }
 
     public Optional<Student> findById(int id){
