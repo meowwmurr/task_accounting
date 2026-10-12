@@ -24,13 +24,13 @@ public class Group {
 
     public void addStudent(Student student){
         if (student == null){
-            throw new GroupException("Студент не может быть null");
+            throw new GroupException("Student cant be null");
         }
         else{
             if (studentsList.contains(student)){
-                throw new GroupException("Студент уже есть в списке");
+                throw new GroupException("Student is already on this list");
             } else if (student.getGroupId() != this.groupId) {
-                throw new GroupException("Студент не с той группы");
+                throw new GroupException("Student from another group");
             }
             studentsList.add(student);
         }
@@ -38,10 +38,10 @@ public class Group {
 
     public void deleteStudent(Student student) {
         if (student == null) {
-            throw new GroupException("Студент не может быть null");
+            throw new GroupException("Student cant be null");
         }
         if (student.getGroupId() != this.groupId) {
-                throw new GroupException("Студент не с той группы");
+                throw new GroupException("Student from another group");
             }
         studentsList.remove(student);
     }
@@ -62,8 +62,22 @@ public class Group {
         return studentsList.size();
     }
 
-    public boolean isGroupEmpty(){
+    public boolean isEmpty(){
         return studentsList.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (o == this){return true;}
+        if (o == null || this.getClass() != o.getClass()) {return false;}
+
+        Group group = (Group) o;
+        return groupId == group.groupId;
+    }
+
+    @Override
+    public int hashCode(){
+        return Integer.hashCode(groupId);
     }
 
     @Override

@@ -9,19 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Student {
-    private int groupId;
-    private int studentId;
+    private final int groupId;
+    private final int studentId;
     private final String fullName;
     private Map<Integer, Boolean> tasks;
-
-    public Student(String fullName, int groupId){
-        if (fullName == null || fullName.isBlank()) {
-            throw new InvalidStudentNameException(fullName);
-        }
-        this.fullName = fullName;
-        this.groupId = groupId;
-        this.tasks = new HashMap<>();
-    }
 
     public Student(String fullName, int groupId, int studentId, Map<Integer, Boolean> tasks){
         if (fullName == null || fullName.isBlank()) {
@@ -33,7 +24,7 @@ public class Student {
         this.tasks = new HashMap<>(tasks);
     }
 
-    public String getFull_name() {
+    public String getFullName() {
         return fullName;
     }
 
@@ -47,10 +38,6 @@ public class Student {
 
     public Map<Integer, Boolean> getTasks() {
         return Collections.unmodifiableMap(tasks);
-    }
-
-    public void setGroupId(int groupId){
-        this.groupId = groupId;
     }
 
     public void updateTasks(int taskNum, boolean status){
