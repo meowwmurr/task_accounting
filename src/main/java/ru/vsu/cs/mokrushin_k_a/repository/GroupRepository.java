@@ -1,14 +1,13 @@
 package ru.vsu.cs.mokrushin_k_a.repository;
 
 import ru.vsu.cs.mokrushin_k_a.exception.BusinessException;
+import ru.vsu.cs.mokrushin_k_a.exception.GroupNotFoundException;
 import ru.vsu.cs.mokrushin_k_a.exception.InvalidDataException;
 import ru.vsu.cs.mokrushin_k_a.model.Group;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class GroupRepository {
     private int nextIdGroup = 1;
@@ -71,25 +70,24 @@ public class GroupRepository {
         save();
     }
 
-    public void deleteGroupFromRep(Group group){
-        if(group == null){
-            throw new InvalidDataException("Group can't be null");
+    public void deleteGroupById(int groupId) {
+        Group group = groups.get(groupId);
+        if (group == null) {
+            throw new GroupNotFoundException(groupId);
         }
-        if(group.isEmpty()) {
-            groups.remove(group.getGroupId(), group);
-            save();
-        }
-        else {
+        if (!group.isEmpty()) {
             throw new BusinessException("Can't delete a non-empty group");
         }
+        groups.remove(groupId);
+        save();
     }
 
     public Optional<Group> findGroupById(int id){
         return Optional.ofNullable(groups.get(id));
     }
 
-    public Map<Integer, Group> findAll(){
-        return new HashMap<>(groups);
+    public List<Group> findAll() {
+        return new ArrayList<>(groups.values());
     }
 
     public void updateGroup(Group group){
@@ -99,6 +97,10 @@ public class GroupRepository {
 
         groups.put(group.getGroupId(), group);
         save();
+    }
+
+    public List<Group> findGroupsByCourse(int courseNumber) {
+        return groups.values().stream().filter(g -> g.getCourseNumber() == courseNumber).toList();
     }
 
     public boolean groupInList(int groupId){

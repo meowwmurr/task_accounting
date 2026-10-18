@@ -1,5 +1,7 @@
 package ru.vsu.cs.mokrushin_k_a.repository;
 
+import ru.vsu.cs.mokrushin_k_a.exception.InvalidDataException;
+import ru.vsu.cs.mokrushin_k_a.model.Group;
 import ru.vsu.cs.mokrushin_k_a.model.Student;
 
 import java.io.*;
@@ -69,24 +71,27 @@ public class StudentRepository {
 
     public void addStudentToRep(Student student){
         if (student == null){
-            throw new IllegalArgumentException("Student cant be null");
+            throw new InvalidDataException("Student can't be null");
         }
-        else{
-            if (students.containsKey(student.getStudentId())){
-                throw new InvalidStudentNameException("Student is already on this list");
-            }
-            /*
-              распишу тут пока свои мысли по поводу присвоения id. Т.к id это final параметр у Student
-              ПОЭТОМУ студент будет получать свой id уже в Сервисе при создании репы и чтения списка студентов
-             */
-            students.put(student.getStudentId(), student);
-            save();
+        if (students.containsKey(student.getStudentId())){
+            throw new InvalidDataException("Student with id " + student.getStudentId() + " already exists");
         }
+        students.put(student.getStudentId(), student);
+        save();
     }
 
     public void deleteStudentFromRepo(Student student){
         if (student == null) throw new IllegalArgumentException();
         students.remove(student.getStudentId(), student);
+        save();
+    }
+
+    public void updateStudent(Student student){
+        if(student == null){
+            throw new InvalidDataException("Student can't be null");
+        }
+
+        students.put(student.getGroupId(), student);
         save();
     }
 

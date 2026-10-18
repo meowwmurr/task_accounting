@@ -11,7 +11,7 @@ public class Student {
     private final int groupId;
     private final int studentId;
     private final String fullName;
-    private Map<Integer, Boolean> tasks;
+    private final Map<Integer, Boolean> tasks;
 
     public Student(String fullName, int groupId, int studentId, Map<Integer, Boolean> tasks){
         if (fullName == null || fullName.isBlank()) {
