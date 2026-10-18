@@ -1,14 +1,14 @@
 package ru.vsu.cs.mokrushin_k_a.repository;
 
-import ru.vsu.cs.mokrushin_k_a.exception.GroupException;
+import ru.vsu.cs.mokrushin_k_a.exception.BusinessException;
+import ru.vsu.cs.mokrushin_k_a.exception.InvalidDataException;
 import ru.vsu.cs.mokrushin_k_a.model.Group;
-import ru.vsu.cs.mokrushin_k_a.model.Student;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class GroupRepository {
     private int nextIdGroup = 1;
@@ -17,6 +17,7 @@ public class GroupRepository {
 
     public GroupRepository(String filePath){
         this.filePath = filePath;
+        load();
     }
 
     private void load(){
@@ -33,15 +34,15 @@ public class GroupRepository {
                 int courseNum = Integer.parseInt(parts[0]);
                 int groupId = Integer.parseInt(parts[1]);
                 String groupName = parts[2];
-
                 Group group = new Group(courseNum, groupId, groupName);
+                groups.put(groupId, group);
 
                 if(groupId >= nextIdGroup){
                     nextIdGroup = groupId + 1;
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException("Error loading groups from file: " + e.getMessage());
         }
     }
 
@@ -55,29 +56,36 @@ public class GroupRepository {
                 bw.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException("Error saving groups to file: " + e.getMessage());
         }
     }
 
     public void addGroupToRep(Group group){
-        if(group == null){throw new IllegalArgumentException();}
-        if(groups.containsKey(group.getGroupId())){throw new GroupException("Group is already in the list");}
+        if(group == null){
+            throw new InvalidDataException("Group can't be null");
+        }
+        if(groups.containsKey(group.getGroupId())){
+            throw new InvalidDataException("Group with id " + group.getGroupId() + " is already in the list");
+        }
         groups.put(group.getGroupId(), group);
         save();
     }
 
     public void deleteGroupFromRep(Group group){
-        if(group == null){throw new IllegalArgumentException();}
+        if(group == null){
+            throw new InvalidDataException("Group can't be null");
+        }
         if(group.isEmpty()) {
             groups.remove(group.getGroupId(), group);
             save();
         }
-        else {throw new GroupException("Можно удалить только пустую группу");}
+        else {
+            throw new BusinessException("Can't delete a non-empty group");
+        }
     }
 
-    public Group findGroupById(int id){
-        if(!groups.containsKey(id)){throw new GroupException("Group not found in list");}
-        return groups.get(id);
+    public Optional<Group> findGroupById(int id){
+        return Optional.ofNullable(groups.get(id));
     }
 
     public Map<Integer, Group> findAll(){
@@ -85,7 +93,9 @@ public class GroupRepository {
     }
 
     public void updateGroup(Group group){
-        if(group == null){throw new IllegalArgumentException("Group can't be null");}
+        if(group == null){
+            throw new InvalidDataException("Group can't be null");
+        }
 
         groups.put(group.getGroupId(), group);
         save();

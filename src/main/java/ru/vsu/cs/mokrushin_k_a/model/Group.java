@@ -1,6 +1,6 @@
 package ru.vsu.cs.mokrushin_k_a.model;
 
-import ru.vsu.cs.mokrushin_k_a.exception.GroupException;
+import ru.vsu.cs.mokrushin_k_a.exception.InvalidDataException; // Не забудь этот импорт!
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +10,7 @@ public class Group {
     private final int groupId;
     private final int courseNumber;
     private final String groupName;
-    private List<Student> studentsList = new ArrayList<>();
+    private final List<Student> studentsList = new ArrayList<>();
 
     public Group(int courseNumber, int groupId, String groupName){
         this.courseNumber = courseNumber;
@@ -24,26 +24,28 @@ public class Group {
 
     public void addStudent(Student student){
         if (student == null){
-            throw new GroupException("Student cant be null");
+            throw new InvalidDataException("Student can't be null");
         }
-        else{
-            if (studentsList.contains(student)){
-                throw new GroupException("Student is already on this list");
-            } else if (student.getGroupId() != this.groupId) {
-                throw new GroupException("Student from another group");
-            }
-            studentsList.add(student);
+        if (student.getGroupId() != this.groupId) {
+            throw new InvalidDataException("Student from another group");
         }
+        if (studentsList.contains(student)){
+            throw new InvalidDataException("Student is already in this group");
+        }
+
+        studentsList.add(student);
     }
 
     public void deleteStudent(Student student) {
         if (student == null) {
-            throw new GroupException("Student cant be null");
+            throw new InvalidDataException("Student can't be null");
         }
         if (student.getGroupId() != this.groupId) {
-                throw new GroupException("Student from another group");
-            }
-        studentsList.remove(student);
+            throw new InvalidDataException("Student from another group");
+        }
+        if (!studentsList.remove(student)) {
+            throw new InvalidDataException("Student is not in this group");
+        }
     }
 
     public List<Student> getStudentsList(){
@@ -68,8 +70,8 @@ public class Group {
 
     @Override
     public boolean equals(Object o){
-        if (o == this){return true;}
-        if (o == null || this.getClass() != o.getClass()) {return false;}
+        if (o == this) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         Group group = (Group) o;
         return groupId == group.groupId;
@@ -84,7 +86,7 @@ public class Group {
     public String toString(){
         return "Group " +
                 "{id = " + groupId +
-                ", name = " + groupName +
+                ", name = '" + groupName + '\'' +
                 ", course = " + courseNumber +
                 ", studentsCount = " + getStudentsCount() +
                 "}";
