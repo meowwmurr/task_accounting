@@ -80,7 +80,7 @@ public class CmdController {
 
     private void deleteGroup(){
         System.out.println(" === Удаление группы === ");
-        System.out.println(" == Список групп == ");
+        System.out.println("  ==  Список групп == ");
         List<Group> groups = groupService.getAllGroups();
 
         for(Group g : groups){
@@ -145,7 +145,7 @@ public class CmdController {
 
     private void deleteStudent() {
         System.out.println(" === Удаление студента === \n");
-        System.out.println(" == Список студентов == ");
+        System.out.println("  ==  Список студентов  ==  ");
         List<Student> students = studentService.getAllStudents();
 
         for (Student s : students) {

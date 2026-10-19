@@ -5,9 +5,7 @@ import ru.vsu.cs.mokrushin_k_a.model.Student;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 public class StudentRepository {
@@ -90,7 +88,7 @@ public class StudentRepository {
             throw new InvalidDataException("Student can't be null");
         }
 
-        students.put(student.getGroupId(), student);
+        students.put(student.getStudentId(), student);
         save();
     }
 
@@ -98,8 +96,8 @@ public class StudentRepository {
         return Optional.ofNullable(students.get(id));
     }
 
-    public Map<Integer, Student> findAll(){
-        return new HashMap<>(students);
+    public List<Student> findAll(){
+        return new ArrayList<>(students.values());
     }
 
     public int generateId(){

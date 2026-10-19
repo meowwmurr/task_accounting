@@ -51,7 +51,7 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents() {
-        return new ArrayList<>(studentRepository.findAll().values());
+        return new ArrayList<>(studentRepository.findAll());
     }
 
     public List<Student> getStudentsByGroup(int groupId) {

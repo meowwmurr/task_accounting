@@ -20,7 +20,7 @@ public class Main {
             StudentRepository studentRepository = new StudentRepository(studentsFilePath);
             GroupRepository groupRepository = new GroupRepository(groupsFilePath);
 
-            for (Student student : studentRepository.findAll().values()) {
+            for (Student student : studentRepository.findAll()) {
                 groupRepository.findGroupById(student.getGroupId())
                         .ifPresent(group -> group.addStudent(student));
             }
