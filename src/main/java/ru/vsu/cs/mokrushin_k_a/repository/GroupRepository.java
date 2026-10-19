@@ -103,9 +103,6 @@ public class GroupRepository {
         return groups.values().stream().filter(g -> g.getCourseNumber() == courseNumber).toList();
     }
 
-    public boolean groupInList(int groupId){
-        return groups.containsKey(groupId);
-    }
 
     public int generateId(){
         return nextIdGroup++;

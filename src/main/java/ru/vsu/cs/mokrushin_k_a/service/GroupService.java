@@ -5,18 +5,15 @@ import ru.vsu.cs.mokrushin_k_a.exception.GroupNotFoundException;
 import ru.vsu.cs.mokrushin_k_a.model.Group;
 import ru.vsu.cs.mokrushin_k_a.model.Student;
 import ru.vsu.cs.mokrushin_k_a.repository.GroupRepository;
-import ru.vsu.cs.mokrushin_k_a.repository.StudentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class GroupService {
-    private final StudentRepository studentRepository;
     private final GroupRepository groupRepository;
 
-    public GroupService(StudentRepository studentRepository, GroupRepository groupRepository) {
-        this.studentRepository = studentRepository;
+    public GroupService(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
 
@@ -44,5 +41,10 @@ public class GroupService {
 
     public List<Group> getGroupsByCourse(int courseNumber) {
         return groupRepository.findGroupsByCourse(courseNumber);
+    }
+
+    public List<Student> getStudentsFromGroup(int groupId){
+        Group group = groupRepository.findGroupById(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
+        return group.getStudentsList();
     }
 }

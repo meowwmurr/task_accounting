@@ -1,7 +1,6 @@
 package ru.vsu.cs.mokrushin_k_a.repository;
 
 import ru.vsu.cs.mokrushin_k_a.exception.InvalidDataException;
-import ru.vsu.cs.mokrushin_k_a.model.Group;
 import ru.vsu.cs.mokrushin_k_a.model.Student;
 
 import java.io.*;
