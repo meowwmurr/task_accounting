@@ -1,17 +1,34 @@
 package ru.vsu.cs.mokrushin_k_a;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import ru.vsu.cs.mokrushin_k_a.controller.CmdController;
+import ru.vsu.cs.mokrushin_k_a.model.Student;
+import ru.vsu.cs.mokrushin_k_a.repository.GroupRepository;
+import ru.vsu.cs.mokrushin_k_a.repository.StudentRepository;
+import ru.vsu.cs.mokrushin_k_a.service.GroupService;
+import ru.vsu.cs.mokrushin_k_a.service.StudentService;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+public class Main {
+        public static void main(String[] args) {
+            System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+            System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
+            String studentsFilePath = "src/data/studentRepository.csv";
+            String groupsFilePath = "src/data/groupRepository.csv";
+            StudentRepository studentRepository = new StudentRepository(studentsFilePath);
+            GroupRepository groupRepository = new GroupRepository(groupsFilePath);
+
+            for (Student student : studentRepository.findAll()) {
+                groupRepository.findGroupById(student.getGroupId())
+                        .ifPresent(group -> group.addStudent(student));
+            }
+
+            StudentService studentService = new StudentService(studentRepository, groupRepository);
+            GroupService groupService = new GroupService(groupRepository);
+            Scanner scanner = new Scanner(System.in);
+            CmdController controller = new CmdController(studentService, groupService, scanner);
+            controller.run();
         }
-    }
 }
